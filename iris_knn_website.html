@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project 2 — Iris KNN Classifier</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:#f4f7fb;color:#172033}
+  .hero{background:linear-gradient(135deg,#182848,#4b6cb7);color:#fff;padding:42px 20px}
+  .wrap{max-width:1100px;margin:auto}
+  h1{margin:0 0 10px;font-size:32px}
+  .subtitle{opacity:.9;font-size:16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin:24px 0}
+  .card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 7px 22px rgba(20,35,70,.08)}
+  .metric{font-size:30px;font-weight:800;margin-top:7px;color:#3558a8}
+  .label{font-size:13px;color:#68748a;text-transform:uppercase;letter-spacing:.08em}
+  section{margin:22px 0}
+  h2{font-size:21px;margin-top:0}
+  table{width:100%;border-collapse:collapse;margin-top:12px}
+  th,td{padding:11px;border-bottom:1px solid #e8ecf2;text-align:left}
+  th{background:#f7f9fc}
+  .features{display:flex;flex-wrap:wrap;gap:9px}
+  .pill{background:#edf2ff;color:#3153a0;padding:8px 11px;border-radius:999px;font-size:13px}
+  .matrix{display:grid;grid-template-columns:repeat(4,1fr);max-width:500px;gap:3px;background:#dfe5ef;padding:3px;border-radius:10px;overflow:hidden}
+  .matrix div{background:#fff;padding:18px;text-align:center;font-weight:700}
+  .matrix .head{background:#eef2f7;font-size:12px;color:#667085}
+  .bar{height:14px;background:#e8edf5;border-radius:20px;overflow:hidden;margin-top:9px}
+  .fill{height:100%;background:#4b6cb7;border-radius:20px;width:96.67%}
+  button{border:0;background:#3558a8;color:#fff;padding:12px 18px;border-radius:10px;cursor:pointer;font-weight:700}
+  button:hover{background:#294789}
+  .note{font-size:14px;line-height:1.6;color:#5c677a}
+  footer{padding:30px 0;color:#7b8494;font-size:13px}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="wrap">
+    <h1>🌸 Iris Data Classification</h1>
+    <div class="subtitle">Project 2 • K-Nearest Neighbors (KNN) Pipeline</div>
+  </div>
+</div>
+
+<main class="wrap">
+  <div class="grid">
+    <div class="card"><div class="label">Samples</div><div class="metric">150</div></div>
+    <div class="card"><div class="label">Features</div><div class="metric">4</div></div>
+    <div class="card"><div class="label">Classes</div><div class="metric">3</div></div>
+    <div class="card"><div class="label">Test Split</div><div class="metric">20%</div></div>
+    <div class="card"><div class="label">K Value</div><div class="metric">5</div></div>
+    <div class="card"><div class="label">Accuracy</div><div class="metric">96.67%</div></div>
+  </div>
+
+  <section class="card">
+    <h2>Dataset Overview</h2>
+    <p class="note">The Iris benchmark dataset contains 150 samples with four measurements and three target classes.</p>
+    <div class="features">
+      <span class="pill">Sepal length</span><span class="pill">Sepal width</span>
+      <span class="pill">Petal length</span><span class="pill">Petal width</span>
+      <span class="pill">Setosa</span><span class="pill">Versicolor</span><span class="pill">Virginica</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Model Pipeline</h2>
+    <table>
+      <tr><th>Step</th><th>Operation</th></tr>
+      <tr><td>1</td><td>Load Iris dataset</td></tr>
+      <tr><td>2</td><td>80% training / 20% testing, shuffled and stratified</td></tr>
+      <tr><td>3</td><td>Standardize features with StandardScaler</td></tr>
+      <tr><td>4</td><td>Train KNN classifier with k = 5</td></tr>
+      <tr><td>5</td><td>Predict test samples</td></tr>
+      <tr><td>6</td><td>Validate accuracy and classification metrics</td></tr>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2>Model Accuracy</h2>
+    <strong>96.67%</strong>
+    <div class="bar"><div class="fill"></div></div>
+    <p class="note">The result corresponds to the fixed random state (42) and stratified 80/20 split used in the uploaded Python program.</p>
+  </section>
+
+  <section class="card">
+    <h2>Confusion Matrix</h2>
+    <p class="note">Rows represent actual classes and columns represent predicted classes.</p>
+    <div class="matrix">
+      <div class="head"></div><div class="head">Setosa</div><div class="head">Versicolor</div><div class="head">Virginica</div>
+      <div class="head">Setosa</div><div>10</div><div>0</div><div>0</div>
+      <div class="head">Versicolor</div><div>0</div><div>10</div><div>0</div>
+      <div class="head">Virginica</div><div>0</div><div>1</div><div>9</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Classification Report</h2>
+    <table>
+      <tr><th>Class</th><th>Precision</th><th>Recall</th><th>F1-score</th></tr>
+      <tr><td>Setosa</td><td>1.00</td><td>1.00</td><td>1.00</td></tr>
+      <tr><td>Versicolor</td><td>0.91</td><td>1.00</td><td>0.95</td></tr>
+      <tr><td>Virginica</td><td>1.00</td><td>0.90</td><td>0.95</td></tr>
+      <tr><th>Accuracy</th><th colspan="3">0.97</th></tr>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2>Interactive Prediction</h2>
+    <p class="note">Enter four flower measurements. This browser demo uses a compact nearest-centroid approximation of the Iris classes; the metrics above are the results of the uploaded Python KNN pipeline.</p>
+    <div class="grid">
+      <label>Sepal length<br><input id="a" type="number" step="0.1" value="5.1"></label>
+      <label>Sepal width<br><input id="b" type="number" step="0.1" value="3.5"></label>
+      <label>Petal length<br><input id="c" type="number" step="0.1" value="1.4"></label>
+      <label>Petal width<br><input id="d" type="number" step="0.1" value="0.2"></label>
+    </div>
+    <button onclick="predict()">Predict Flower</button>
+    <div id="result" class="metric" style="margin-top:18px"></div>
+  </section>
+
+  <footer>Converted from the uploaded Python/Colab KNN Iris classification program.</footer>
+</main>
+
+<script>
+const centroids = {
+  Setosa:[5.006,3.428,1.462,0.246],
+  Versicolor:[5.936,2.770,4.260,1.326],
+  Virginica:[6.588,2.974,5.552,2.026]
+};
+function predict(){
+  const x=[+a.value,+b.value,+c.value,+d.value];
+  const distances=Object.entries(centroids).map(([name,c])=>[
+    name, Math.sqrt(x.reduce((s,v,i)=>s+(v-c[i])**2,0))
+  ]).sort((p,q)=>p[1]-q[1]);
+  result.textContent="Prediction: "+distances[0][0];
+}
+</script>
+</body>
+</html>
