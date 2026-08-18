@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Career Match AI</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:#f4f7fb;color:#172033}
+.hero{background:linear-gradient(135deg,#111827,#3155a6);color:white;padding:52px 20px}
+.wrap{max-width:1050px;margin:auto}
+h1{font-size:38px;margin:0 0 10px}
+.subtitle{opacity:.9;font-size:17px}
+.card{background:white;border-radius:18px;padding:24px;margin:22px 0;box-shadow:0 8px 28px rgba(25,40,80,.08)}
+h2{margin-top:0}
+textarea{width:100%;min-height:100px;border:1px solid #d9dfeb;border-radius:12px;padding:14px;font-size:16px;resize:vertical}
+button{margin-top:14px;background:#3155a6;color:#fff;border:0;border-radius:10px;padding:13px 20px;font-weight:700;cursor:pointer}
+button:hover{background:#254587}
+.result{display:flex;align-items:center;gap:18px;padding:18px 0;border-bottom:1px solid #edf0f5}
+.result:last-child{border-bottom:0}
+.rank{font-size:22px;font-weight:800;width:40px}
+.job{flex:1;font-weight:750;font-size:18px}
+.skills{font-size:13px;color:#68748a;margin-top:5px}
+.score{font-weight:800;color:#3155a6;min-width:85px;text-align:right}
+.bar{height:9px;background:#e9edf4;border-radius:20px;margin-top:9px;overflow:hidden}
+.fill{height:100%;background:#3155a6;border-radius:20px}
+.small{color:#6b7280;font-size:14px;line-height:1.6}
+.badge{display:inline-block;background:#edf2ff;color:#3155a6;padding:7px 10px;border-radius:999px;margin:4px;font-size:13px}
+footer{text-align:center;color:#7b8494;padding:28px}
+</style>
+</head>
+<body>
+<header class="hero">
+<div class="wrap">
+<h1>💼 Career Match AI</h1>
+<div class="subtitle">Find the jobs that best match your skills using TF-IDF and cosine similarity</div>
+</div>
+</header>
+
+<main class="wrap">
+<section class="card">
+<h2>Enter Your Skills</h2>
+<p class="small">Enter skills separated by spaces, for example: <b>Python Cloud Automation</b></p>
+<textarea id="skills">Python Cloud Automation</textarea>
+<br>
+<button onclick="matchJobs()">Find Top 3 Jobs</button>
+</section>
+
+<section class="card">
+<h2>Top 3 Matching Jobs</h2>
+<div id="results"><p class="small">Click “Find Top 3 Jobs” to calculate your matches.</p></div>
+</section>
+
+<section class="card">
+<h2>How It Works</h2>
+<p class="small">This website follows the structure of your uploaded program: job roles and required skills are stored as a table, the user's skills are converted into TF-IDF vectors, cosine similarity is calculated, and the highest-scoring three jobs are displayed. fileciteturn1file0L14-L23 fileciteturn1file0L45-L63</p>
+<div>
+<span class="badge">TF-IDF Vectorization</span>
+<span class="badge">Cosine Similarity</span>
+<span class="badge">Top 3 Matching Jobs</span>
+</div>
+</section>
+</main>
+<footer>Career Match AI • Browser-based version of the uploaded Python project</footer>
+
+<script>
+const jobs = [
+ {name:"Data Scientist", skills:"Python SQL Machine Learning Data Analysis Pandas"},
+ {name:"DevOps Engineer", skills:"Docker AWS Linux Cloud Automation Python"},
+ {name:"Cloud Architect", skills:"AWS Azure Cloud Architecture Security Terraform"},
+ {name:"Backend Developer", skills:"Python Django FastAPI PostgreSQL Docker Git"},
+ {name:"Machine Learning Engineer", skills:"Python TensorFlow PyTorch Machine Learning Scikit-learn"}
+];
+
+// Browser implementation of TF-IDF + cosine similarity,
+// matching the algorithmic structure of the Python project.
+function tokenize(text){
+ return text.toLowerCase().match(/[a-z0-9]+/g) || [];
+}
+function tfidfDocuments(docs){
+ const tokens=docs.map(tokenize);
+ const vocab=[...new Set(tokens.flat())];
+ const N=docs.length;
+ const df={};
+ vocab.forEach(w=>df[w]=tokens.filter(d=>d.includes(w)).length);
+ return tokens.map(doc=>{
+   const counts={}; doc.forEach(w=>counts[w]=(counts[w]||0)+1);
+   return vocab.map(w=>{
+     const tf=(counts[w]||0)/doc.length;
+     const idf=Math.log((N+1)/(df[w]+1))+1;
+     return tf*idf;
+   });
+ });
+}
+function cosine(a,b){
+ let dot=0,na=0,nb=0;
+ for(let i=0;i<a.length;i++){dot+=a[i]*b[i];na+=a[i]*a[i];nb+=b[i]*b[i]}
+ return na&&nb?dot/(Math.sqrt(na)*Math.sqrt(nb)):0;
+}
+function matchJobs(){
+ const user=document.getElementById("skills").value.trim();
+ if(!user){document.getElementById("results").innerHTML="<p class='small'>Please enter at least one skill.</p>";return}
+ const docs=jobs.map(j=>j.skills).concat(user);
+ const vectors=tfidfDocuments(docs);
+ const userVector=vectors[vectors.length-1];
+ const ranked=jobs.map((j,i)=>({...j,score:cosine(userVector,vectors[i])}))
+   .sort((a,b)=>b.score-a.score).slice(0,3);
+
+ document.getElementById("results").innerHTML=ranked.map((j,i)=>{
+   const pct=(j.score*100).toFixed(2);
+   return `<div class="result">
+     <div class="rank">#${i+1}</div>
+     <div class="job">${j.name}
+       <div class="skills">${j.skills}</div>
+       <div class="bar"><div class="fill" style="width:${Math.min(100,j.score*100)}%"></div></div>
+     </div>
+     <div class="score">${pct}% Match</div>
+   </div>`;
+ }).join("");
+}
+</script>
+</body>
+</html>
