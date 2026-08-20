@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project 4 — AI Vision Lab</title>
+  <meta name="description" content="Artificial Intelligence Project 4: Image & Text Recognition">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg-orb orb-one"></div>
+  <div class="bg-orb orb-two"></div>
+
+  <header class="topbar">
+    <a class="brand" href="#home">
+      <span class="brand-mark">AI</span>
+      <span>AI Vision Lab</span>
+    </a>
+    <nav>
+      <a href="#lab">Recognition Lab</a>
+      <a href="#pipeline">Pipeline</a>
+      <a href="#validation">Validation</a>
+    </nav>
+  </header>
+
+  <main id="home">
+    <section class="hero section">
+      <div class="hero-copy">
+        <span class="eyebrow">ARTIFICIAL INTELLIGENCE • PROJECT 4</span>
+        <h1>Building the<br><span>Machine’s Optic Nerve.</span></h1>
+        <p class="lead">A browser-based image & text recognition lab inspired by the DecodeLabs Industrial Training Kit.</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#lab">Launch Recognition Lab →</a>
+          <a class="btn ghost" href="#pipeline">Explore the pipeline</a>
+        </div>
+        <div class="hero-stats">
+          <div><b>80%</b><small>minimum confidence</small></div>
+          <div><b>2</b><small>recognition paths</small></div>
+          <div><b>3</b><small>pre-processing steps</small></div>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="scanner">
+          <div class="scan-line"></div>
+          <div class="scan-grid"></div>
+          <div class="target-corner c1"></div><div class="target-corner c2"></div>
+          <div class="target-corner c3"></div><div class="target-corner c4"></div>
+          <div class="scan-label">OPTIC NERVE / ONLINE</div>
+          <div class="scan-icon">◈</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section intro-grid">
+      <div class="section-heading">
+        <span class="eyebrow">THE MISSION</span>
+        <h2>From pixels to machine-readable intelligence.</h2>
+      </div>
+      <div class="glass text-card">
+        <p>Structured data is easy for machines to process. Project 4 moves into unstructured visual data: scanned documents, photographs and real-world objects.</p>
+        <p>The goal is simple: ingest visual input, preprocess it, recognize useful information, apply a confidence filter and present a validated result.</p>
+      </div>
+    </section>
+
+    <section class="section" id="lab">
+      <div class="section-heading center">
+        <span class="eyebrow">LIVE DEMO</span>
+        <h2>Recognition Lab</h2>
+        <p>Upload an image and choose how the machine should perceive it.</p>
+      </div>
+
+      <div class="lab-shell glass">
+        <div class="lab-toolbar">
+          <label class="upload-btn">
+            <input id="imageInput" type="file" accept="image/*">
+            <span>＋ Upload image</span>
+          </label>
+          <div class="mode-switch" role="tablist">
+            <button class="mode active" data-mode="ocr">OCR / Text</button>
+            <button class="mode" data-mode="object">Object Detection</button>
+          </div>
+          <button id="runBtn" class="btn primary small" disabled>Run Recognition</button>
+        </div>
+
+        <div class="workspace">
+          <div class="preview-panel">
+            <div class="panel-title"><span>INPUT MATRIX</span><span id="imageMeta">No image loaded</span></div>
+            <div class="canvas-wrap" id="canvasWrap">
+              <div class="empty-state">
+                <div class="empty-icon">↑</div>
+                <h3>Drop an image here</h3>
+                <p>JPG, PNG or WEBP</p>
+              </div>
+              <canvas id="previewCanvas"></canvas>
+            </div>
+            <div class="controls">
+              <label>Threshold <output id="thresholdValue">128</output>
+                <input id="threshold" type="range" min="30" max="220" value="128">
+              </label>
+              <label>Blur <output id="blurValue">0</output>
+                <input id="blur" type="range" min="0" max="6" value="0">
+              </label>
+              <label class="check"><input id="grayscale" type="checkbox" checked> Grayscale</label>
+              <label class="check"><input id="thresholding" type="checkbox"> Adaptive threshold</label>
+            </div>
+          </div>
+
+          <div class="result-panel">
+            <div class="panel-title"><span>MACHINE OUTPUT</span><span id="status" class="status">IDLE</span></div>
+            <div id="result" class="result-area">
+              <div class="result-placeholder">
+                <div class="pulse-dot"></div>
+                <h3>Awaiting perception</h3>
+                <p>Upload an image, then run the selected recognition path.</p>
+              </div>
+            </div>
+            <div class="confidence-bar">
+              <div><span>Confidence gate</span><strong>80%</strong></div>
+              <div class="bar"><span id="confidenceFill"></span></div>
+              <small>Detections below the gate are discarded.</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="lab-note">Browser implementation: Tesseract.js for OCR and TensorFlow.js COCO-SSD for object detection. Both run locally in the browser after the model libraries load.</p>
+    </section>
+
+    <section class="section" id="pipeline">
+      <div class="section-heading">
+        <span class="eyebrow">THE PERCEPTION MATRIX</span>
+        <h2>Two execution paths.</h2>
+      </div>
+      <div class="path-grid">
+        <article class="path-card active-path">
+          <div class="path-num">01</div>
+          <h3>Optical Character Recognition</h3>
+          <p>Extracts machine-readable strings from documents, signs, labels and other text-containing images.</p>
+          <div class="tags"><span>Tesseract</span><span>Grayscale</span><span>Threshold</span><span>Text</span></div>
+          <ol>
+            <li>Load visual input</li>
+            <li>Convert and preprocess pixels</li>
+            <li>Recognize character sequences</li>
+            <li>Apply the 80% confidence gate</li>
+          </ol>
+        </article>
+        <article class="path-card">
+          <div class="path-num">02</div>
+          <h3>Object Detection</h3>
+          <p>Identifies physical entities and returns their labels, confidence scores and bounding-box coordinates.</p>
+          <div class="tags"><span>COCO-SSD</span><span>MobileNet</span><span>Bounding Box</span><span>Vision</span></div>
+          <ol>
+            <li>Resize input for the model</li>
+            <li>Construct model tensor</li>
+            <li>Predict object classes</li>
+            <li>Draw only ≥80% detections</li>
+          </ol>
+        </article>
+      </div>
+
+      <div class="model-flow glass">
+        <div class="flow-node"><b>01</b><span>RAW IMAGE</span><small>H × W × 3</small></div>
+        <i>→</i>
+        <div class="flow-node"><b>02</b><span>PREPROCESS</span><small>Gray / Blur / Binary</small></div>
+        <i>→</i>
+        <div class="flow-node"><b>03</b><span>MODEL</span><small>OCR / Detector</small></div>
+        <i>→</i>
+        <div class="flow-node"><b>04</b><span>CONFIDENCE</span><small>≥ 0.80</small></div>
+        <i>→</i>
+        <div class="flow-node success"><b>05</b><span>OUTPUT</span><small>Validated result</small></div>
+      </div>
+    </section>
+
+    <section class="section technical">
+      <div class="section-heading center">
+        <span class="eyebrow">UNDER THE HOOD</span>
+        <h2>How the machine sees.</h2>
+      </div>
+      <div class="tech-grid">
+        <article class="tech-card"><span>01</span><h3>Pixel Matrix</h3><p>An image is represented as a three-dimensional array: height × width × color channels. Pixel intensity is represented numerically.</p></article>
+        <article class="tech-card"><span>02</span><h3>Pre-processing</h3><p>Grayscale removes unnecessary color information; blur can reduce micro-noise; thresholding separates foreground from background.</p></article>
+        <article class="tech-card"><span>03</span><h3>Transfer Learning</h3><p>Pre-trained visual models reuse learned features such as edges, shapes and gradients instead of learning everything from scratch.</p></article>
+        <article class="tech-card"><span>04</span><h3>Softmax & Confidence</h3><p>The model produces probabilities. A confidence filter reduces false positives by rejecting uncertain predictions.</p></article>
+      </div>
+    </section>
+
+    <section class="section" id="validation">
+      <div class="validation glass">
+        <div>
+          <span class="eyebrow">GATEKEEPER RULE</span>
+          <h2>Milestone validation</h2>
+          <p>Use this checklist to verify that the Project 4 pipeline meets the training brief.</p>
+        </div>
+        <div class="check-grid">
+          <label><input type="checkbox"> <span><b>01 — Library integration</b><small>Recognition engine loads without errors.</small></span></label>
+          <label><input type="checkbox"> <span><b>02 — Pre-processing integrity</b><small>Grayscale / thresholding can be demonstrated.</small></span></label>
+          <label><input type="checkbox"> <span><b>03 — Accuracy benchmarking</b><small>Final output meets the 80% confidence standard.</small></span></label>
+          <label><input type="checkbox"> <span><b>04 — Visual confirmation</b><small>Readable OCR or accurate labelled boxes are generated.</small></span></label>
+        </div>
+      </div>
+    </section>
+
+    <section class="section conclusion">
+      <span class="eyebrow">PROJECT COMPLETE</span>
+      <h2>Structured data mastered.<br><span>Machine perception activated.</span></h2>
+      <p>This website turns the Project 4 training brief into an interactive demonstration: the user supplies visual data, the machine preprocesses it, a pre-trained model performs recognition, and the confidence gate decides what becomes visible output.</p>
+      <a class="btn primary" href="#lab">Run the optic nerve again ↑</a>
+    </section>
+  </main>
+
+  <footer>
+    <span>AI Vision Lab • Project 4</span>
+    <span>Image & Text Recognition</span>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
